@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <title>Gestionar Producto</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+            crossorigin="anonymous"
+        />
+    </head>
+
+    <body>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{% if producto %}Editar Producto{% else %}Agregar Nuevo Producto{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                
+                {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
+                        <strong>⚠️ Error de Validación:</strong> {{ error }}
+                        <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Producto</label>
+                        <input type="text" name="nombre" class="form-control" required placeholder="Ej: Mouse Gamer" value="{{ producto.nombre|default:'' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Precio</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="precio" class="form-control" required value="{{ producto.precio|default:'' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Stock Inicial</label>
+                        <input type="number" name="stock" class="form-control" required value="{{ producto.stock|default:'' }}">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">{% if producto %}Actualizar en OCI{% else %}Guardar en OCI{% endif %}</button>
+                        <a href="{% url 'listar' %}" class="btn btn-light border">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+    </body>
+</html>

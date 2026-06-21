@@ -1,0 +1,27 @@
+# 1. Usar una imagen oficial de Python ligera como sistema base
+FROM python:3.12-slim
+
+# 2. Establecer el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# 3. Instalar dependencias del sistema operativo Linux necesarias para compilar MySQL
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    default-libmysqlclient-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# 4. Copiar primero el archivo de requerimientos (esto optimiza la caché de Docker)
+COPY requirements.txt .
+
+# 5. Instalar las dependencias de Python (Django, Azure, MySQL, etc.)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 6. Copiar todo el resto del código del proyecto al contenedor
+COPY . .
+
+# 7. Exponer el puerto por el que escuchará nuestra web
+EXPOSE 8000
+
+# 8. Comando por defecto para iniciar el servidor de Django al levantar el contenedor
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
